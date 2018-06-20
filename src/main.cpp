@@ -14,6 +14,18 @@ void setup()
   Serial1.begin(9600, SERIAL_8N1, 12, 15);   //17-TX 18-RX
 }
 
+
+static void smartDelay(unsigned long ms)
+{
+  unsigned long start = millis();
+  do
+  {
+    while (Serial1.available())
+      gps.encode(Serial1.read());
+  } while (millis() - start < ms);
+}
+
+
 void loop()
 {
   Serial.print("Latitude  : ");
@@ -37,14 +49,4 @@ void loop()
 
   if (millis() > 5000 && gps.charsProcessed() < 10)
     Serial.println(F("No GPS data received: check wiring"));
-}
-
-static void smartDelay(unsigned long ms)
-{
-  unsigned long start = millis();
-  do
-  {
-    while (Serial1.available())
-      gps.encode(Serial1.read());
-  } while (millis() - start < ms);
 }
